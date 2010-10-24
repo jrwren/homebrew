@@ -5,6 +5,27 @@ require 'utils'
 
 ARGV.extend(HomebrewArgvExtension)
 
+THIS_IS_LINUX = RUBY_PLATFORM.downcase.include?("linux")
+THIS_IS_OSX = RUBY_PLATFORM.downcase.include?("darwin")
+
+def on_osx
+  yield if THIS_IS_OSX and block_given?
+  THIS_IS_OSX
+end
+
+def on_linux
+  yield if THIS_IS_LINUX and block_given?
+  THIS_IS_LINUX
+end
+
+def assert_osx
+  abort "This is not Mac OS X!" unless on_osx
+end
+
+def assert_linux
+  abort "This is not Linux!" unless on_linux
+end
+
 HOMEBREW_VERSION = '0.7.1'
 HOMEBREW_WWW = 'http://mxcl.github.com/homebrew/'
 
@@ -31,12 +52,21 @@ else
   HOMEBREW_CELLAR = HOMEBREW_REPOSITORY+'Cellar'
 end
 
-MACOS_FULL_VERSION = `/usr/bin/sw_vers -productVersion`.chomp
-MACOS_VERSION = /(10\.\d+)(\.\d+)?/.match(MACOS_FULL_VERSION).captures.first.to_f
+if on_osx
+  MACOS_FULL_VERSION = `/usr/bin/sw_vers -productVersion`.chomp
+  MACOS_VERSION = /(10\.\d+)(\.\d+)?/.match(MACOS_FULL_VERSION).captures.first.to_f
+  HOMEBREW_USER_AGENT = "Homebrew #{HOMEBREW_VERSION} (Ruby #{RUBY_VERSION}-#{RUBY_PATCHLEVEL}; Mac OS X #{MACOS_FULL_VERSION})"
 
-HOMEBREW_USER_AGENT = "Homebrew #{HOMEBREW_VERSION} (Ruby #{RUBY_VERSION}-#{RUBY_PATCHLEVEL}; Mac OS X #{MACOS_FULL_VERSION})"
+  RECOMMENDED_LLVM = 2326
+  RECOMMENDED_GCC_40 = (MACOS_VERSION >= 10.6) ? 5494 : 5493
+  RECOMMENDED_GCC_42 = (MACOS_VERSION >= 10.6) ? 5664 : 5577
 
+elsif on_linux
+  LINUX_ISSUE = /(.*?) \\n/.match(`cat /etc/issue`.chomp).captures.first
+  LINUX_VERSION = `uname -r`.chomp
+  LINUX_FULL_VERSION = "#{LINUX_ISSUE} (#{LINUX_VERSION})"
+  HOMEBREW_USER_AGENT = "Homebrew #{HOMEBREW_VERSION} (Ruby #{RUBY_VERSION}-#{RUBY_PATCHLEVEL}; #{LINUX_FULL_VERSION})"
 
-RECOMMENDED_LLVM = 2326
-RECOMMENDED_GCC_40 = (MACOS_VERSION >= 10.6) ? 5494 : 5493
-RECOMMENDED_GCC_42 = (MACOS_VERSION >= 10.6) ? 5664 : 5577
+else
+  abort "I am not sure what OS I'm executing on. Bye!"
+end
