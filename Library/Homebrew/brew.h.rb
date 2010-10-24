@@ -450,16 +450,18 @@ def brew_install
   raise "Cannot write to #{HOMEBREW_PREFIX}" unless HOMEBREW_PREFIX.writable?
 
   ################################################################# warnings
-  begin
-    if MACOS_VERSION >= 10.6
-      opoo "You should upgrade to Xcode 3.2.3" if llvm_build < RECOMMENDED_LLVM
-    else
-      opoo "You should upgrade to Xcode 3.1.4" if (gcc_40_build < RECOMMENDED_GCC_40) or (gcc_42_build < RECOMMENDED_GCC_42)
+  on_osx do
+    begin
+      if MACOS_VERSION >= 10.6
+        opoo "You should upgrade to Xcode 3.2.3" if llvm_build < RECOMMENDED_LLVM
+      else
+        opoo "You should upgrade to Xcode 3.1.4" if (gcc_40_build < RECOMMENDED_GCC_40) or (gcc_42_build < RECOMMENDED_GCC_42)
+      end
+    rescue
+      # the reason we don't abort is some formula don't require Xcode
+      # TODO allow formula to declare themselves as "not needing Xcode"
+      opoo "Xcode is not installed! Builds may fail!"
     end
-  rescue
-    # the reason we don't abort is some formula don't require Xcode
-    # TODO allow formula to declare themselves as "not needing Xcode"
-    opoo "Xcode is not installed! Builds may fail!"
   end
 
   if on_osx and macports_or_fink_installed?
