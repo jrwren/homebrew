@@ -71,5 +71,5 @@ protected
 end
 
 def snow_leopard_64?
-  MACOS_VERSION >= 10.6 and Hardware.is_64_bit?
+  on_osx and MACOS_VERSION >= 10.6 and Hardware.is_64_bit?
 end
