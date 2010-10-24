@@ -32,14 +32,15 @@ private
   end
 
   def clean_file path
+    # TODO: consider making stripping an option that may be turned off.
     perms=0444
     case `file -h '#{path}'`
-    when /Mach-O dynamically linked shared library/
+    when /ELF \d+\-bit LSB shared object/
       # Stripping libraries is causing no end of trouble
       # Lets just give up, and try to do it manually in instances where it
       # makes sense
       #strip path, '-SxX'
-    when /Mach-O [^ ]* ?executable/
+    when /ELF \d+\-bit LSB executable/
       strip path
       perms=0555
     when /script text executable/
