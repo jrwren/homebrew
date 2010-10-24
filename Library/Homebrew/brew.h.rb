@@ -462,7 +462,7 @@ def brew_install
     opoo "Xcode is not installed! Builds may fail!"
   end
 
-  if macports_or_fink_installed?
+  if on_osx and macports_or_fink_installed?
     opoo "It appears you have MacPorts or Fink installed."
     puts "Software installed with MacPorts and Fink are known to cause problems."
     puts "If you experience issues try uninstalling these tools."

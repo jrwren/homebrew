@@ -68,7 +68,7 @@ Xcode: #{xcode}
 GCC-4.0: #{gcc_40 ? "build #{gcc_40}" : "N/A"} #{gcc_42_msg}
 GCC-4.2: #{gcc_42 ? "build #{gcc_42}" : "N/A"} #{gcc_40_msg}
 LLVM: #{llvm ? "build #{llvm}" : "N/A" } #{llvm_msg}
-MacPorts or Fink? #{macports_or_fink_installed?}
+MacPorts or Fink? #{on_osx and macports_or_fink_installed?}
 X11 installed? #{x11_installed?}
 EOS
 end

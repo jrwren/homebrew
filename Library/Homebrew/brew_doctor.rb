@@ -93,7 +93,7 @@ def check_for_nonstandard_x11
 end
 
 def check_for_other_package_managers
-  if macports_or_fink_installed?
+  if on_osx and macports_or_fink_installed?
     puts <<-EOS.undent
       You have Macports or Fink installed. This can cause trouble.
       You don't have to uninstall them, but you may like to try temporarily
