@@ -1,41 +1,23 @@
+require 'set'
+
 class Hardware
   # These methods use info spewed out by sysctl.
   # Look in <mach/machine.h> for decoding info.
 
+  @@cpuinfo = nil
+  
   def self.cpu_type
-    @@cpu_type ||= `/usr/sbin/sysctl -n hw.cputype`.to_i
-
-    case @@cpu_type
-    when 7
-      :intel
-    when 18
-      :ppc
-    else
-      :dunno
-    end
+    # TODO: do better
+    :intel
   end
 
   def self.intel_family
-    @@intel_family ||= `/usr/sbin/sysctl -n hw.cpufamily`.to_i
-
-    case @@intel_family
-    when 0x73d67300 # Yonah: Core Solo/Duo
-      :core
-    when 0x426f69ef # Merom: Core 2 Duo
-      :core2
-    when 0x78ea4fbc # Penryn
-      :penryn
-    when 0x6b5a4cd2 # Nehalem
-      :nehalem
-    when 0x573B5EEC # Arrandale
-      :arrandale
-    else
-      :dunno
-    end
+    # TODO: do better
+    :dunno
   end
 
   def self.processor_count
-    @@processor_count ||= `/usr/sbin/sysctl -n hw.ncpu`.to_i
+    Hardware.proc_cpuinfo[:processor].size
   end
   
   def self.cores_as_words
@@ -53,7 +35,12 @@ class Hardware
   end
 
   def self.is_64_bit?
-    self.sysctl_bool("hw.cpu64bit_capable")
+    Hardware.proc_cpuinfo[:flags].each do |core_flags|
+      if core_flags.include? 'lm' # "Long mode" => 64-bit
+        return true
+      end
+    end
+    false
   end
   
   def self.bits
@@ -61,12 +48,25 @@ class Hardware
   end
 
 protected
-  def self.sysctl_bool(property)
-    result = nil
-    IO.popen("/usr/sbin/sysctl -n #{property} 2>/dev/null") do |f|
-      result = f.gets.to_i # should be 0 or 1
+  def self.proc_cpuinfo
+    if @@cpuinfo.nil?
+      info = Hash.new()
+      cpu_dump = `cat /proc/cpuinfo`.chomp
+      cpu_dump.split(/\n/).each do |x|
+        if x.size != 0
+          k, v = x.split(/\s*:\s*/)
+          if k == 'processor'
+            info[:processor] ||= []
+            info[:processor] << v.to_i
+          elsif k == 'flags'
+            info[:flags] ||= []
+            info[:flags] << Set.new(v.split)
+          end
+        end
+      end
+      @@cpuinfo = info
     end
-    $?.success? && result == 1 # sysctl call succeded and printed 1
+    @@cpuinfo
   end
 end
 
