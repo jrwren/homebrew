@@ -1,7 +1,7 @@
 class RefreshBrew
   REPOSITORY_URL   = "https://github.com/paxan/homebrew.git"
   INIT_COMMAND     = "git init"
-  CHECKOUT_COMMAND = "git checkout -q linux"
+  CHECKOUT_COMMAND = "git checkout -q master"
   UPDATE_COMMAND   = "git pull #{REPOSITORY_URL} linux"
   REVISION_COMMAND = "git log -l -1 --pretty=format:%H 2> /dev/null"
   GIT_UP_TO_DATE   = "Already up-to-date."
