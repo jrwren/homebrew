@@ -6,4 +6,5 @@
 /bin/*
 !/bin/brew
 !/share/man/man1/brew.1
+/Library/Caches/
 .DS_Store

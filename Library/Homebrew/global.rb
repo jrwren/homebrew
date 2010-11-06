@@ -29,20 +29,24 @@ end
 HOMEBREW_VERSION = '0.7.1'
 HOMEBREW_WWW = 'http://mxcl.github.com/homebrew/'
 
-if Process.uid == 0
-  # technically this is not the correct place, this cache is for *all users*
-  # so in that case, maybe we should always use it, root or not?
-  HOMEBREW_CACHE=Pathname.new("/Library/Caches/Homebrew")
-else
-  HOMEBREW_CACHE=Pathname.new("~/Library/Caches/Homebrew").expand_path
-end
-
 if not defined? HOMEBREW_BREW_FILE
   HOMEBREW_BREW_FILE = ENV['HOMEBREW_BREW_FILE'] || `which brew`.chomp
 end
 
 HOMEBREW_PREFIX = Pathname.new(HOMEBREW_BREW_FILE).dirname.parent # Where we link under
 HOMEBREW_REPOSITORY = Pathname.new(HOMEBREW_BREW_FILE).realpath.dirname.parent # Where .git is found
+
+if on_osx
+  if Process.uid == 0
+    # technically this is not the correct place, this cache is for *all users*
+    # so in that case, maybe we should always use it, root or not?
+    HOMEBREW_CACHE=Pathname.new("/Library/Caches/Homebrew")
+  else
+    HOMEBREW_CACHE=Pathname.new("~/Library/Caches/Homebrew").expand_path
+  end
+else
+  HOMEBREW_CACHE=Pathname.new(HOMEBREW_REPOSITORY+"Library/Caches")
+end
 
 # Where we store built products; /usr/local/Cellar if it exists,
 # otherwise a Cellar relative to the Repository.
