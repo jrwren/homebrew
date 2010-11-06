@@ -147,10 +147,10 @@ end
 def exec_editor *args
   editor = ENV['HOMEBREW_EDITOR'] || ENV['EDITOR']
   if editor.nil?
-    if system "/usr/bin/which -s mate"
+    if system "/usr/bin/which mate 1> /dev/null"
       # TextMate
       editor='mate'
-    elsif system "/usr/bin/which -s edit"
+    elsif system "/usr/bin/which edit 1> /dev/null"
       # BBEdit / TextWrangler
       editor='edit'
     else

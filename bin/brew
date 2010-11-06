@@ -178,7 +178,7 @@ begin
       end
 
   when 'up', 'update'
-    abort "Please `brew install git' first." unless system "/usr/bin/which -s git"
+    abort "Please `brew install git' first." unless system "/usr/bin/which git 1> /dev/null"
 
     require 'update'
     updater = RefreshBrew.new
@@ -332,7 +332,7 @@ begin
     ENV['PATH'] += ":#{HOMEBREW_REPOSITORY}/Library/Contributions/examples"
 
     # Check for an external shell command
-    if system "/usr/bin/which -s brew-#{arg}"
+    if system "/usr/bin/which brew-#{arg} 1> /dev/null"
       # Add some Homebrew vars to the ENV
       %w(CACHE CELLAR LIBRARY_PATH PREFIX REPOSITORY).each do |e|
         ENV["HOMEBREW_#{e}"] = eval("HOMEBREW_#{e}")
