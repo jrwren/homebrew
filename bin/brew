@@ -53,6 +53,12 @@ def dump_config
   gcc_40, gcc_40_msg = _compiler_recommendation gcc_40_build, RECOMMENDED_GCC_40
   xcode = xcode_version || "?"
 
+  if on_osx
+    os_text = "OS X: #{MACOS_FULL_VERSION}"
+  else
+    os_text = "Linux: #{LINUX_FULL_VERSION}"
+  end
+
   puts <<-EOS
 HOMEBREW_VERSION: #{HOMEBREW_VERSION}
 HEAD: #{sha}
@@ -61,7 +67,7 @@ HOMEBREW_CELLAR: #{HOMEBREW_CELLAR}
 HOMEBREW_REPOSITORY: #{HOMEBREW_REPOSITORY}
 HOMEBREW_LIBRARY_PATH: #{HOMEBREW_LIBRARY_PATH}
 Hardware: #{cores}-core #{bits}-bit #{Hardware.intel_family}
-OS X: #{MACOS_FULL_VERSION}
+#{os_text}
 Kernel Architecture: #{kernel_arch}
 Ruby: #{RUBY_VERSION}-#{RUBY_PATCHLEVEL}
 /usr/bin/ruby => #{system_ruby.realpath}

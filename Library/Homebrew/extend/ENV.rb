@@ -43,7 +43,8 @@ module HomebrewEnvExtension
     # http://gcc.gnu.org/onlinedocs/gcc-4.2.1/gcc/i386-and-x86_002d64-Options.html
     # we don't set, eg. -msse3 because the march flag does that for us
     #   http://gcc.gnu.org/onlinedocs/gcc-4.3.3/gcc/i386-and-x86_002d64-Options.html
-    if MACOS_VERSION >= 10.6
+    if not on_osx or MACOS_VERSION >= 10.6
+      # When not on OS X, we assume we have GCC >= 4.2
       case Hardware.intel_family
       when :nehalem, :penryn, :core2
         # the 64 bit compiler adds -mfpmath=sse for us
