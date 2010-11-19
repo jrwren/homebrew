@@ -595,7 +595,9 @@ def brew_doctor
     check_for_macgpg2
     check_for_stray_dylibs
     check_gcc_versions
-    check_cc_symlink
+    on_osx do
+      check_cc_symlink
+    end
     check_for_other_package_managers
     check_for_x11
     check_for_nonstandard_x11

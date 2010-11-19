@@ -18,7 +18,7 @@ module HomebrewEnvExtension
       self['CMAKE_PREFIX_PATH'] = "#{HOMEBREW_PREFIX}"
     end
 
-    if MACOS_VERSION >= 10.6 and (self['HOMEBREW_USE_LLVM'] or ARGV.include? '--use-llvm')
+    if on_osx and MACOS_VERSION >= 10.6 and (self['HOMEBREW_USE_LLVM'] or ARGV.include? '--use-llvm')
       xcode_path = `/usr/bin/xcode-select -print-path`.chomp
       xcode_path = "/Developer" if xcode_path.to_s.empty?
       self['CC'] = "#{xcode_path}/usr/bin/llvm-gcc"
@@ -121,6 +121,7 @@ module HomebrewEnvExtension
   end
 
   def llvm
+    assert_osx
     xcode_path = `/usr/bin/xcode-select -print-path`.chomp
     xcode_path = "/Developer" if xcode_path.to_s.empty?
     self['CC'] = "#{xcode_path}/usr/bin/llvm-gcc"

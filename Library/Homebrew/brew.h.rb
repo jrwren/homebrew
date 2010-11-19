@@ -574,6 +574,7 @@ def gcc_40_build
 end
 
 def llvm_build
+  assert_osx
   if MACOS_VERSION >= 10.6
     xcode_path = `/usr/bin/xcode-select -print-path`.chomp
     return nil if xcode_path.empty?
