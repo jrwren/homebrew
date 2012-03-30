@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 
 # Many Pathname operations use getwd when they shouldn't, and then throw 

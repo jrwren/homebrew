@@ -106,7 +106,11 @@ class FormulaInstaller
       fork do
         begin
           read.close
-          exec '/usr/bin/nice', '/usr/bin/ruby', '-I', File.dirname(__FILE__), '-rinstall', f.path, '--', *ARGV.options_only
+          nicecmd = '/usr/bin/nice'
+          if !File.exists?(nicecmd)
+            nicecmd = '/bin/nice'
+          end
+          exec nicecmd, '/usr/bin/env','ruby', '-I', File.dirname(__FILE__), '-rinstall', f.path, '--', *ARGV.options_only
         rescue => e
           Marshal.dump(e, write)
           write.close

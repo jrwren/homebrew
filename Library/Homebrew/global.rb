@@ -66,7 +66,8 @@ if on_osx
   RECOMMENDED_GCC_42 = (MACOS_VERSION >= 10.6) ? 5664 : 5577
 
 elsif on_linux
-  LINUX_ISSUE = /(.*?) \\n/.match(`cat /etc/issue`.chomp).captures.first
+  f = File.open('/etc/issue')
+  LINUX_ISSUE = f.readlines[0]
   LINUX_VERSION = `uname -r`.chomp
   LINUX_FULL_VERSION = "#{LINUX_ISSUE} (#{LINUX_VERSION})"
   HOMEBREW_USER_AGENT = "Homebrew #{HOMEBREW_VERSION} (Ruby #{RUBY_VERSION}-#{RUBY_PATCHLEVEL}; #{LINUX_FULL_VERSION})"
